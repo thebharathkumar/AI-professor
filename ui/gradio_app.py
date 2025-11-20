@@ -305,8 +305,9 @@ class ProfessorBrusseauUI:
 
                     ### Technical Details
 
-                    - Model: Claude Sonnet 4.5
-                    - Framework: LangChain with ChromaDB
+                    - Model: GPT-4o
+                    - Embeddings: OpenAI text-embedding-3-small
+                    - Vector Store: ChromaDB
                     - Interface: Gradio
                     """)
 
@@ -318,9 +319,9 @@ def main():
     setup_logging()
 
     # Check if API keys are set
-    if not settings.anthropic_api_key:
-        logger.error("ANTHROPIC_API_KEY not set. Please configure your .env file.")
-        print("\n⚠️  ERROR: ANTHROPIC_API_KEY not set!")
+    if not settings.openai_api_key:
+        logger.error("OPENAI_API_KEY not set. Please configure your .env file.")
+        print("\n⚠️  ERROR: OPENAI_API_KEY not set!")
         print("Please copy .env.example to .env and add your API key.\n")
         return
 

@@ -3,7 +3,7 @@ Essay grading assistant using AI
 """
 import logging
 from typing import Dict, Any, List, Optional
-from anthropic import Anthropic
+from openai import OpenAI
 from config import settings
 from .rubric import GradingRubric, RubricCriterion
 from src.vectorstore import VectorStoreManager
@@ -44,7 +44,7 @@ When grading:
             course: Course context (ai_ethics or business_ethics)
         """
         self.course = course
-        self.client = Anthropic(api_key=settings.anthropic_api_key)
+        self.client = OpenAI(api_key=settings.openai_api_key)
 
         # Initialize vector store for course materials
         collection_name = (
@@ -95,16 +95,18 @@ When grading:
                 context
             )
 
-            # Get grading from Claude
-            response = self.client.messages.create(
+            # Get grading from OpenAI
+            response = self.client.chat.completions.create(
                 model=settings.primary_model,
                 max_tokens=4096,
                 temperature=0.3,  # Lower temperature for more consistent grading
-                system=self.GRADING_SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": grading_prompt}]
+                messages=[
+                    {"role": "system", "content": self.GRADING_SYSTEM_PROMPT},
+                    {"role": "user", "content": grading_prompt}
+                ]
             )
 
-            feedback = response.content[0].text
+            feedback = response.choices[0].message.content
 
             # Parse the response to extract scores (if structured)
             # For now, return full feedback
@@ -161,7 +163,7 @@ When grading:
         rubric: List[RubricCriterion],
         context: str
     ) -> str:
-        """Build the grading prompt for Claude"""
+        """Build the grading prompt for OpenAI"""
         rubric_text = GradingRubric.format_rubric(rubric)
 
         prompt = f"""Please grade the following student essay according to the rubric below.

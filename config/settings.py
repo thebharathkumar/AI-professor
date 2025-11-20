@@ -18,11 +18,10 @@ class Settings(BaseSettings):
     )
 
     # API Keys
-    anthropic_api_key: str = ""
     openai_api_key: str = ""
 
     # Model Configuration
-    primary_model: str = "claude-sonnet-4-5-20250929"
+    primary_model: str = "gpt-4o"
     embedding_model: str = "text-embedding-3-small"
     temperature: float = 0.7
     max_tokens: int = 4096
