@@ -10,9 +10,7 @@ Before starting, ensure you have:
 - Python 3.9 or higher installed
 - At least 2GB of free disk space
 - Internet connection for API calls
-- API keys from:
-  - [Anthropic](https://console.anthropic.com/) (for Claude)
-  - [OpenAI](https://platform.openai.com/) (for embeddings)
+- OpenAI API key from [OpenAI](https://platform.openai.com/) (for GPT-4o and embeddings)
 
 ### 2. Installation
 
@@ -48,10 +46,9 @@ nano .env
 vim .env
 ```
 
-Add your API keys to the `.env` file:
+Add your API key to the `.env` file:
 
 ```
-ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 ```
 
@@ -179,9 +176,9 @@ The Grading Assistant helps grade essays and provides detailed feedback.
 
 ### Common Issues
 
-**Issue: "ANTHROPIC_API_KEY not set"**
+**Issue: "OPENAI_API_KEY not set"**
 - Solution: Make sure you've created a `.env` file and added your API key
-- Check that the key starts with `sk-ant-`
+- Check that the key starts with `sk-`
 
 **Issue: "No documents were processed"**
 - Solution: Verify that you've placed course materials in `data/raw/ai_ethics/` or `data/raw/business_ethics/`
@@ -292,7 +289,6 @@ A: Currently, you need to provide transcripts. Use YouTube's transcript feature 
 ## Resources
 
 - Main README: [README.md](README.md)
-- Anthropic Claude Docs: https://docs.anthropic.com/
 - OpenAI API Docs: https://platform.openai.com/docs
 - ChromaDB Docs: https://docs.trychroma.com/
 

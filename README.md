@@ -32,9 +32,7 @@ This project creates a digital twin of Professor James Brusseau that:
 ## 📋 Prerequisites
 
 - Python 3.9 or higher
-- API keys:
-  - Anthropic API key (for Claude)
-  - OpenAI API key (for embeddings)
+- OpenAI API key (for GPT-4o and embeddings)
 
 ## 🚀 Quick Start
 
@@ -58,9 +56,8 @@ pip install -r requirements.txt
 # Copy example environment file
 cp .env.example .env
 
-# Edit .env and add your API keys
+# Edit .env and add your API key
 # Required:
-# - ANTHROPIC_API_KEY
 # - OPENAI_API_KEY
 ```
 
@@ -254,7 +251,7 @@ temperature: float = 0.7        # LLM temperature
    - Enables semantic search
 
 3. **Conversational Agent**
-   - Uses Claude for generation
+   - Uses GPT-4o for generation
    - Retrieves relevant context
    - Maintains conversation history
 
@@ -345,8 +342,7 @@ Professor James Brusseau specializes in AI Ethics and Business Ethics, bringing 
 
 ## 🙏 Acknowledgments
 
-- Anthropic Claude API for conversational AI
-- OpenAI for embeddings
+- OpenAI for GPT-4o and embeddings
 - ChromaDB for vector storage
 - Gradio for the web interface
 

@@ -35,6 +35,5 @@ def setup_logging(log_file: str = None) -> None:
 
     # Reduce noise from some libraries
     logging.getLogger('httpx').setLevel(logging.WARNING)
-    logging.getLogger('anthropic').setLevel(logging.WARNING)
     logging.getLogger('openai').setLevel(logging.WARNING)
     logging.getLogger('chromadb').setLevel(logging.WARNING)

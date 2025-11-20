@@ -3,7 +3,7 @@ Main agent implementation for Professor Brusseau digital twin
 """
 import logging
 from typing import List, Dict, Any, Optional
-from anthropic import Anthropic
+from openai import OpenAI
 from config import settings
 from src.vectorstore import VectorStoreManager
 
@@ -65,8 +65,8 @@ Remember: You are here to facilitate learning, not just provide answers. Help st
         self.model = model or settings.primary_model
         self.temperature = temperature or settings.temperature
 
-        # Initialize Anthropic client
-        self.client = Anthropic(api_key=settings.anthropic_api_key)
+        # Initialize OpenAI client
+        self.client = OpenAI(api_key=settings.openai_api_key)
 
         # Initialize vector store for the specific course
         collection_name = (
@@ -104,8 +104,12 @@ Remember: You are here to facilitate learning, not just provide answers. Help st
                 if retrieved_docs:
                     context = self._format_context(retrieved_docs)
 
-            # Build messages for Claude
-            messages = conversation_history or []
+            # Build messages for OpenAI
+            messages = [{"role": "system", "content": self.SYSTEM_PROMPT}]
+
+            # Add conversation history
+            if conversation_history:
+                messages.extend(conversation_history)
 
             # Add current question with context
             user_message = question
@@ -125,23 +129,22 @@ Please provide a thoughtful response that draws on the course materials while ma
                 "content": user_message
             })
 
-            # Generate response using Claude
-            response = self.client.messages.create(
+            # Generate response using OpenAI
+            response = self.client.chat.completions.create(
                 model=self.model,
                 max_tokens=settings.max_tokens,
                 temperature=self.temperature,
-                system=self.SYSTEM_PROMPT,
                 messages=messages
             )
 
             # Extract the text response
-            response_text = response.content[0].text
+            response_text = response.choices[0].message.content
 
             return {
                 "response": response_text,
                 "context_used": len(retrieved_docs) > 0,
                 "sources": [doc['metadata'].get('source', 'unknown') for doc in retrieved_docs],
-                "conversation_history": messages + [{
+                "conversation_history": messages[1:] + [{  # Exclude system message from history
                     "role": "assistant",
                     "content": response_text
                 }]
@@ -180,15 +183,17 @@ Please provide a thoughtful response that draws on the course materials while ma
 This question seems unclear or too vague. As Professor Brusseau, ask a helpful clarifying question that will help you understand what the student is really asking about. Be encouraging and supportive."""
 
         try:
-            response = self.client.messages.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 max_tokens=500,
                 temperature=self.temperature,
-                system=self.SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": prompt}]
+                messages=[
+                    {"role": "system", "content": self.SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt}
+                ]
             )
 
-            return response.content[0].text
+            return response.choices[0].message.content
 
         except Exception as e:
             logger.error(f"Error generating clarifying question: {e}")
